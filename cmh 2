@@ -1,0 +1,7 @@
+#include <stdio.h>
+int main() {
+    int a = 5;
+    int b = 2;
+    float x = (float)a / b; 
+    printf("Ket qua = %.2f", x);
+}
