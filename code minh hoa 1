@@ -1,0 +1,22 @@
+int main() {
+    char a = 'A';
+    unsigned char b = 200;
+    short c = -32000;
+    unsigned short d = 65000;
+    int e = -1000;
+    unsigned int f = 4000000000;
+    long g = 1000000;
+    long long h = 1234567890123;
+    float i = 3.14f;
+    double j = 3.1415926535;
+    printf("a = %c, dia chi = %p\n", a, (void*)&a);
+    printf("b = %u, dia chi = %p\n", b, (void*)&b);
+    printf("c = %d, dia chi = %p\n", c, (void*)&c);
+    printf("d = %u, dia chi = %p\n", d, (void*)&d);
+    printf("e = %d, dia chi = %p\n", e, (void*)&e);
+    printf("f = %u, dia chi = %p\n", f, (void*)&f);
+    printf("g = %ld, dia chi = %p\n", g, (void*)&g);
+    printf("h = %lld, dia chi = %p\n", h, (void*)&h);
+    printf("i = %f, dia chi = %p\n", i, (void*)&i);
+    printf("j = %lf, dia chi = %p\n", j, (void*)&j);
+}
