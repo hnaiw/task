@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 100
+int stack[MAX];
+int top = -1;
+void push(int x){
+    if(top >= MAX-1){
+        printf("Stack day!\n");
+    }else{
+        top++;
+        stack[top] = x;
+    }
+}
+int pop(){
+    if(top < 0){
+        return -1;
+    }else{
+        return stack[top--];
+    }
+}
+void chuyenCoSo(int n, int base){
+    top = -1;
+    if(n == 0){
+        push(0);
+        return;
+    }
+    while(n > 0){
+        push(n % base);
+        n = n / base;
+    }
+}
+void hienKetQua(int base){
+    int x;
+    while(top != -1){
+        x = pop();
+        if(base == 16 && x >= 10)
+            printf("%c", x + 55);..
+        else
+            printf("%d", x);
+    }
+    printf("\n");
+}
+int main(){
+    int n, choice;
+    do{
+        printf("\n===== MENU =====\n");
+        printf("1. Chuyen mot so nguyen duong sang he 2\n");
+        printf("2. Chuyen mot so nguyen duong sang he 8\n");
+        printf("3. Chuyen mot so nguyen duong sang he 16\n");
+        printf("4. Ket thuc\n");
+        printf("Nhap lua chon: ");
+        scanf("%d", &choice);
+        switch(choice){
+            case 1:
+                printf("Nhap so thap phan: ");
+                scanf("%d",&n);
+                chuyenCoSo(n,2);
+                printf("Ket qua he 2: ");
+                hienKetQua(2);
+                break;
+            case 2:
+                printf("Nhap so thap phan: ");
+                scanf("%d",&n);
+                chuyenCoSo(n,8);
+                printf("Ket qua he 8: ");
+                hienKetQua(8);
+                break;
+            case 3:
+                printf("Nhap so thap phan: ");
+                scanf("%d",&n);
+                chuyenCoSo(n,16);
+                printf("Ket qua he 16: ");
+                hienKetQua(16);
+                break;
+            case 4:
+                printf("Ket thuc chuong trinh\n");
+                break;
+            default:
+                printf("Lua chon khong hop le!\n");
+        }
+    }while(choice != 4);
+    return 0;
+}
