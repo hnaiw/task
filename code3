@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <math.h>
+#define MAX 100
+int n, m;
+float P[MAX], Q[MAX], T[MAX];
+float x;
+void nhapDaThuc(float a[], int *bac)
+{
+    printf("Nhap bac cua da thuc: ");
+    scanf("%d", bac);
+    for(int i = 0; i <= *bac; i++)
+    {
+        printf("Nhap he so a%d: ", i);
+        scanf("%f", &a[i]);
+    }
+}
+void inDaThuc(float a[], int bac)
+{
+    for(int i = bac; i >= 0; i--)
+    {
+        printf("%.2fx^%d", a[i], i);
+        if(i > 0) printf(" + ");
+    }
+    printf("\n");
+}
+float tinhGiaTri(float a[], int bac, float x)
+{
+    float s = 0;
+    for(int i = 0; i <= bac; i++)
+        s += a[i] * pow(x,i);
+    return s;
+}
+void tinhTong()
+{
+    int max = (n > m) ? n : m;
+    for(int i = 0; i <= max; i++)
+    {
+        float a = (i <= n) ? P[i] : 0;
+        float b = (i <= m) ? Q[i] : 0;
+        T[i] = a + b;
+    }
+}
+int main()
+{
+    int chon;
+    do{
+        printf("\n1. Nhap he so cua 2 da thuc P, Q");
+        printf("\n2. Tinh he so cua da thuc T = P + Q");
+        printf("\n3. In he so cua 3 da thuc");
+        printf("\n4. In gia tri cua 3 da thuc");
+        printf("\n5. Ket thuc");
+        printf("\nChon: ");
+        scanf("%d",&chon);
+        switch(chon)
+        {
+            case 1:
+                printf("\nNhap da thuc P\n");
+                nhapDaThuc(P,&n);
+                printf("\nNhap da thuc Q\n");
+                nhapDaThuc(Q,&m);
+                break;
+            case 2:
+                tinhTong();
+                printf("Da tinh xong da thuc T\n");
+                break;
+            case 3:
+                printf("\nP(x) = ");
+                inDaThuc(P,n);
+                printf("Q(x) = ");
+                inDaThuc(Q,m);
+                printf("T(x) = ");
+                inDaThuc(T,(n>m?n:m));
+                break;
+            case 4:
+                printf("Nhap x = ");
+                scanf("%f",&x);
+                printf("P(x) = %.2f\n",tinhGiaTri(P,n,x));
+                printf("Q(x) = %.2f\n",tinhGiaTri(Q,m,x));
+                printf("T(x) = %.2f\n",tinhGiaTri(T,(n>m?n:m),x));
+                break;
+        }
+    }while(chon != 5);
+    return 0;
+}
