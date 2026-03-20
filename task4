@@ -1,0 +1,330 @@
+ĐỌC GHI
+
+Đọc dữ liệu – scanf()
+Dùng để nhập dữ liệu từ bàn phím.
+Ghi dữ liệu – printf()
+Dùng để in ra màn hình.
+*Đọc / ghi với file
+ Mở file – fopen()
+FILE *f;
+f = fopen("data.txt", "r"); // đọc
+Các chế độ:
+	• "r": đọc
+	• "w": ghi (xóa nội dung cũ)
+	• "a": ghi nối thêm
+	• "r+", "w+": đọc + ghi
+	
+Đọc file
+
+Cách 1: fscanf()
+int x;
+fscanf(f, "%d", &x);
+
+Cách 2: fgets() (đọc dòng)
+char str[100];
+fgets(str, 100, f);
+
+Cách 3: fgetc() (đọc từng ký tự)
+char c = fgetc(f);
+
+Ghi file
+
+Cách 1: fprintf()
+fprintf(f, "%d", 100);
+
+Cách 2: fputs()
+fputs("Hello", f);
+
+Cách 3: fputc()
+fputc('A', f);
+
+Đóng file – fclose()
+fclose(f);
+
+BAI1
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+typedef struct {
+    char ten_hang[50];
+    float don_gia;
+    int so_luong;
+    float thanh_tien;
+} Hang;
+void tinhtien(Hang *h) {
+    h->thanh_tien = h->don_gia * h->so_luong;
+}
+void nhapFile() {
+    FILE *f = fopen("SO_LIEU.C", "wb");
+    if (f == NULL) {
+        printf("Khong mo duoc file!\n");
+        return;
+    }
+
+    int n;
+    printf("Nhap so mat hang: ");
+    scanf("%d", &n);
+
+    Hang h;
+    for (int i = 0; i < n; i++) {
+        printf("\nMat hang %d:\n", i + 1);
+        printf("Ten hang: ");
+        scanf(" %[^\n]", h.ten_hang);
+        printf("Don gia: ");
+        scanf("%f", &h.don_gia);
+        printf("So luong: ");
+        scanf("%d", &h.so_luong);
+
+        tinhtien(&h);
+        fwrite(&h, sizeof(Hang), 1, f);
+    }
+
+    fclose(f);
+}
+
+void boSungFile() {
+    FILE *f = fopen("SO_LIEU.C", "ab");
+    if (f == NULL) {
+        printf("Khong mo duoc file!\n");
+        return;
+    }
+
+    int n;
+    printf("Nhap so mat hang bo sung (>=2): ");
+    scanf("%d", &n);
+
+    Hang h;
+    for (int i = 0; i < n; i++) {
+        printf("\nMat hang %d:\n", i + 1);
+        printf("Ten hang: ");
+        scanf(" %[^\n]", h.ten_hang);
+        printf("Don gia: ");
+        scanf("%f", &h.don_gia);
+        printf("So luong: ");
+        scanf("%d", &h.so_luong);
+
+        tinhtien(&h);
+        fwrite(&h, sizeof(Hang), 1, f);
+    }
+
+    fclose(f);
+}
+void suaFile() {
+    FILE *f = fopen("SO_LIEU.C", "rb+");
+    if (f == NULL) {
+        printf("Khong mo duoc file!\n");
+        return;
+    }
+    char ten[50];
+    printf("Nhap ten hang can sua: ");
+    scanf(" %[^\n]", ten);
+
+    Hang h;
+    int found = 0;
+
+    while (fread(&h, sizeof(Hang), 1, f)) {
+        if (strcmp(h.ten_hang, ten) == 0) {
+            printf("Nhap thong tin moi:\n");
+            printf("Ten hang: ");
+            scanf(" %[^\n]", h.ten_hang);
+            printf("Don gia: ");
+            scanf("%f", &h.don_gia);
+            printf("So luong: ");
+            scanf("%d", &h.so_luong);
+
+            tinhtien(&h);
+
+            fseek(f, -sizeof(Hang), SEEK_CUR);
+            fwrite(&h, sizeof(Hang), 1, f);
+
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Khong tim thay mat hang!\n");
+    }
+
+    fclose(f);
+}
+void hienThiFile() {
+    FILE *f = fopen("SO_LIEU.C", "rb");
+    if (f == NULL) {
+        printf("Khong mo duoc file!\n");
+        return;
+    }
+
+    Hang h;
+    int stt = 1;
+    float tong = 0;
+
+    printf("\nSO LIEU BAN HANG\n");
+    printf("STT\tTen hang\tDon gia\tSo luong\tThanh tien\n");
+
+    while (fread(&h, sizeof(Hang), 1, f)) {
+        printf("%d\t%s\t%.2f\t%d\t\t%.2f\n",
+               stt++, h.ten_hang, h.don_gia, h.so_luong, h.thanh_tien);
+        tong += h.thanh_tien;
+    }
+
+    printf("\nTong tien: %.2f\n", tong);
+
+    fclose(f);
+}
+int main() {
+    int chon;
+
+    do {
+        printf("\n===== MENU =====\n");
+        printf("1. Nhap so lieu ban hang\n");
+        printf("2. Bo sung so lieu\n");
+        printf("3. Sua thong tin mat hang\n");
+        printf("4. Hien thi tep\n");
+        printf("5. Ket thuc\n");
+        printf("Chon: ");
+        scanf("%d", &chon);
+
+        switch (chon) {
+            case 1: nhapFile(); break;
+            case 2: boSungFile(); break;
+            case 3: suaFile(); break;
+            case 4: hienThiFile(); break;
+            case 5: printf("ai doc duoc dong nay rat dep trai\n"); break;
+            default: printf("Lua chon khong hop le!\n");
+        }
+
+    } while (chon != 5);
+
+    return 0;
+}
+
+BAI2
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100
+
+int n, m;
+int A[MAX][MAX], B[MAX][MAX], C[MAX][MAX];
+
+void taoFile() {
+    FILE *f = fopen("MA_TRAN.C", "w");
+    if (f == NULL) {
+        printf("Khong mo duoc file!\n");
+        return;
+    }
+
+    printf("Nhap n, m: ");
+    scanf("%d %d", &n, &m);
+
+    fprintf(f, "%d %d\n", n, m);
+    fprintf(f, "Ma tran A\n");
+    printf("Nhap ma tran A:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            scanf("%d", &A[i][j]);
+            fprintf(f, "%d ", A[i][j]);
+        }
+        fprintf(f, "\n");
+    }
+    fprintf(f, "Ma tran B\n");
+    printf("Nhap ma tran B:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            scanf("%d", &B[i][j]);
+            fprintf(f, "%d ", B[i][j]);
+        }
+        fprintf(f, "\n");
+    }
+
+    fclose(f);
+}
+void docFile() {
+    FILE *f = fopen("MA_TRAN.C", "r");
+    if (f == NULL) {
+        printf("Khong mo duoc file!\n");
+        return;
+    }
+
+    fscanf(f, "%d %d", &n, &m);
+
+    char temp[50];
+    fgets(temp, sizeof(temp), f); 
+    fgets(temp, sizeof(temp), f);
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            fscanf(f, "%d", &A[i][j]);
+    fgets(temp, sizeof(temp), f); 
+    fgets(temp, sizeof(temp), f); 
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            fscanf(f, "%d", &B[i][j]);
+
+    fclose(f);
+
+    printf("\nMa tran A:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++)
+            printf("%d ", A[i][j]);
+        printf("\n");
+    }
+
+    printf("\nMa tran B:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++)
+            printf("%d ", B[i][j]);
+        printf("\n");
+    }
+}
+void ghiMaTranC() {
+    FILE *f = fopen("MA_TRAN.C", "a");
+    if (f == NULL) {
+        printf("Khong mo duoc file!\n");
+        return;
+    }
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            C[i][j] = A[i][j] + B[i][j];
+    fprintf(f, "Ma tran C = A + B\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++)
+            fprintf(f, "%d ", C[i][j]);
+        fprintf(f, "\n");
+    }
+
+    fclose(f);
+
+    printf("\nDa ghi ma tran C vao file!\n");
+}
+
+int main() {
+    int chon;
+
+    do {
+        printf("\n===== MENU =====\n");
+        printf("1. Tao & doc tep MA_TRAN.C\n");
+        printf("2. Ghi ma tran C vao cuoi tep\n");
+        printf("3. Ket thuc\n");
+        printf("Chon: ");
+        scanf("%d", &chon);
+
+        switch (chon) {
+            case 1:
+                taoFile();
+                docFile();
+                break;
+            case 2:
+                ghiMaTranC();
+                break;
+            case 3:
+                printf("toimetmoiqua\n");
+                break;
+            default:
+                printf("Khong hop le!\n");
+        }
+
+    } while (chon != 3);
+
+    return 0;
+}
